@@ -1,5 +1,5 @@
 import unittest
-from markdown_to_blocks import markdown_to_blocks
+from markdown_to_blocks import markdown_to_blocks, block_to_block_type, BlockType
 
 class TestBlock(unittest.TestCase):
     
@@ -23,6 +23,10 @@ This is the same paragraph on a new line
             ],
         )
 
+    def test_block_to_block_type(self):
+        md = "# Heading"
+        block_type = block_to_block_type(md) 
+        self.assertEqual(block_type, BlockType.HEADING)
 
 if __name__ == "__main__":
     unittest.main()
