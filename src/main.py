@@ -1,4 +1,5 @@
 from textnode import TextNode, TextType
+from markdown_to_html import markdown_to_html_node
 import os, shutil
 
 def main():
@@ -10,6 +11,10 @@ def main():
     print("added new public dir")
      
     copy_files("./static", "./public")
+
+
+    generate_page("content/index.md", "template.html", "public/index.html")
+    
     return print("Done!")
 
 
@@ -41,8 +46,26 @@ def extract_title(markdown):
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
-    from_file = open("from_path", "r")
-    template_file = open("template_path", "r")
+    from_file = open(from_path, "r")
+    template_file = open(template_path, "r")
+    file_string = from_file.read()
+    template_string = template_file.read()
+    title = extract_title(file_string)
+    file_html = markdown_to_html_node(file_string).to_html()
+    new_html = template_string.replace("{{ Title }}", title)
+    new_html = new_html.replace("{{ Content }}", file_html)
+    
+    from_file.close()
+    template_file.close()
+
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+
+    with open(dest_path, "w") as f:
+        f.write(new_html)
+    
+    return 
+
+
 
 
 

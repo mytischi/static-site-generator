@@ -66,8 +66,11 @@ def text_node_to_html_node(text_node):
         new_html = LeafNode("i", text_node.text)
         return new_html
     if text_node.text_type == TextType.LINK:
-        new_html = LeafNode("a", text_node.text, text_node.url)
+        new_html = LeafNode("a", text_node.text, {"href": text_node.url})
         return new_html
     if text_node.text_type == TextType.IMAGE:
-        new_html = LeafNode("img", "", text_node.url)
+        new_html = LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+        return new_html
+    if text_node.text_type == TextType.CODE:
+        new_html = LeafNode("code", text_node.text)
         return new_html
