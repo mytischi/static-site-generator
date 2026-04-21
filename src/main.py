@@ -3,7 +3,7 @@ from markdown_to_html import markdown_to_html_node
 import os, shutil
 
 def main():
-    if os.path.exists("./static"):
+    if os.path.exists("./public"):
         #print("statc dir exists")
         shutil.rmtree("./public")
         print("deleted old public dir")
@@ -13,7 +13,8 @@ def main():
     copy_files("./static", "./public")
 
 
-    generate_page("content/index.md", "template.html", "public/index.html")
+    #generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
     
     return print("Done!")
 
@@ -64,6 +65,24 @@ def generate_page(from_path, template_path, dest_path):
         f.write(new_html)
     
     return 
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    items = os.listdir(dir_path_content)
+
+    for item in items:
+        content_path = os.path.join(dir_path_content, item)
+        dest_path = os.path.join(dest_dir_path, item)
+
+        if os.path.isdir(content_path):
+            os.mkdir(dest_path)
+            generate_pages_recursive(content_path, template_path, dest_path)
+        elif item.endswith(".md"):
+            # what should the destination filename be?
+            # should it stay ".md", or become ".html"?
+            html_name = item.replace(".md", ".html")
+            html_dest_path = os.path.join(dest_dir_path, html_name)
+            generate_page(content_path, template_path, html_dest_path)
+    return
 
 
 
